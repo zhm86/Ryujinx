@@ -122,6 +122,5 @@ jobs:
           replacesArtifacts: true
           owner: ${{ env.RYUJINX_TARGET_RELEASE_CHANNEL_OWNER }}
           repo: ${{ env.RYUJINX_TARGET_RELEASE_CHANNEL_REPO }}
-          token: ${{ secrets.RELEASE_TOKEN }}
 
 
