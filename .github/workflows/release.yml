@@ -23,37 +23,8 @@ env:
   RYUJINX_TARGET_RELEASE_CHANNEL_REPO: "release-channel-master"
 
 jobs:
-  tag:
-    name: Create tag
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Get version info
-        id: version_info
-        run: |
-          echo "build_version=${{ env.RYUJINX_BASE_VERSION }}.${{ github.run_number }}" >> $GITHUB_OUTPUT
-        shell: bash
 
-      - name: Create tag
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: 'refs/tags/${{ steps.version_info.outputs.build_version }}',
-              sha: context.sha
-            })
 
-      - name: Create release
-        uses: ncipollo/release-action@v1
-        with:
-          name: ${{ steps.version_info.outputs.build_version }}
-          tag: ${{ steps.version_info.outputs.build_version }}
-          body: "For more information about this release please check out the official [Changelog](https://github.com/Ryujinx/Ryujinx/wiki/Changelog)."
-          omitBodyDuringUpdate: true
-          owner: ${{ env.RYUJINX_TARGET_RELEASE_CHANNEL_OWNER }}
-          repo: ${{ env.RYUJINX_TARGET_RELEASE_CHANNEL_REPO }}
-          token: ${{ secrets.RELEASE_TOKEN }}
 
   release:
     name: Release for ${{ matrix.platform.name }}
@@ -115,12 +86,6 @@ jobs:
         with:
           name: ${{ steps.version_info.outputs.build_version }}
           artifacts: "release_output/*.tar.gz,release_output/*.zip"
-          tag: ${{ steps.version_info.outputs.build_version }}
-          body: "For more information about this release please check out the official [Changelog](https://github.com/Ryujinx/Ryujinx/wiki/Changelog)."
-          omitBodyDuringUpdate: true
-          allowUpdates: true
-          replacesArtifacts: true
-          owner: ${{ env.RYUJINX_TARGET_RELEASE_CHANNEL_OWNER }}
-          repo: ${{ env.RYUJINX_TARGET_RELEASE_CHANNEL_REPO }}
+
 
 
