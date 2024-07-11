@@ -796,6 +796,15 @@ namespace Ryujinx.Graphics.Gpu.Image
             {
                 using (result)
                 {
+                    int hashCode = 0;
+                    foreach (byte c in result.ToArray()) {
+                        hashCode = hashCode * 277 + c;
+                    }
+                    String cachePath = $"./textureCache/{hashCode:X}";
+                    if (System.IO.File.Exists(cachePath)) {
+                        return System.IO.File.ReadAllBytes(cachePath);
+                    }
+                    
                     if (!AstcDecoder.TryDecodeToRgba8P(
                         result.Memory,
                         Info.FormatInfo.BlockWidth,
@@ -819,6 +828,8 @@ namespace Ryujinx.Graphics.Gpu.Image
                             return BCnEncoder.EncodeBC7(decoded.Memory, width, height, sliceDepth, levels, layers);
                         }
                     }
+
+                    System.IO.File.WriteAllBytes(cachePath, decoded);
 
                     return decoded;
                 }
